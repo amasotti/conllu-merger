@@ -1,5 +1,6 @@
 import os
 import requests
+from urllib.parse import unquote
 from typing import Optional
 
 GITHUB_API_BASE_URL = "https://api.github.com/repos"
@@ -13,9 +14,21 @@ def make_github_api_url(github_url: str) -> Optional[str]:
         str: The corresponding GitHub API URL, or None if the URL is invalid.
     """
     try:
-        repo_name = github_url.split('/')[-2]
-        folder_path = github_url.split('/')[-1]
-        return f"{GITHUB_API_BASE_URL}/{repo_name}/contents/{folder_path}"
+        # Decode URL-encoded characters
+        github_url = unquote(github_url)
+
+        # Remove the base GitHub URL and split the remaining path
+        path_parts = github_url.replace("https://github.com/", "").split("/")
+
+        # Extract repo owner, repo name, and branch/subfolder
+        repo_owner = path_parts[0]
+        repo_name = path_parts[1]
+        branch_or_folder = "/".join(path_parts[3:])
+
+        # Create the GitHub API URL
+        api_url = f"{GITHUB_API_BASE_URL}/{repo_owner}/{repo_name}/contents/{branch_or_folder}"
+        print(f"Querying GitHub at URL: {api_url}")
+        return api_url
     except IndexError:
         print("Invalid GitHub URL.")
         return None

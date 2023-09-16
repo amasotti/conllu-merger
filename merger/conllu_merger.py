@@ -1,7 +1,7 @@
 import os
 import glob
 from conllu import parse_incr
-from utils import validate_path
+from .utils import validate_path
 
 def concatenate_conllu(src_folder: str, pattern: str, outfile: str) -> None:
     """

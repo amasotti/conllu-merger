@@ -1,5 +1,6 @@
 import os
 
+
 def validate_path(src_folder: str, outfile: str) -> tuple:
     """
     Validate paths and return absolute paths
