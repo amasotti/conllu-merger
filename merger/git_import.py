@@ -1,3 +1,4 @@
+import glob
 import os
 import random
 import string
@@ -70,6 +71,7 @@ def download_file(file_url: str, dest_path: str) -> None:
     if response.status_code == 200:
         with open(dest_path, 'wb') as f:
             f.write(response.content)
+        print(f"Downloaded {dest_path}.")
     else:
         print(f"Failed to download {dest_path}. Status code: {response.status_code}")
 
@@ -101,6 +103,7 @@ def download_from_github(github_url: str) -> str:
 
     for item in directory_content:
         if item['type'] == 'file':
+            print(f"Downloading {item['name']}...")
             file_url = item['download_url']
             file_name = os.path.join(tmp_dir, item['name'])
             download_file(file_url, file_name)
@@ -110,6 +113,6 @@ def download_from_github(github_url: str) -> str:
 
 def rm_tmp_files(tmp_dir: str) -> None:
     # Remove temporary files
-    for file_path in tmp_dir:
+    for file_path in glob.glob(os.path.join(tmp_dir, "*")):
         os.remove(file_path)
     os.rmdir(tmp_dir)

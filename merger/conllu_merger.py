@@ -2,6 +2,7 @@ import os
 import glob
 from conllu import parse_incr
 from .utils import validate_path
+from tqdm import tqdm
 
 def concatenate_conllu(src_folder: str, pattern: str, outfile: str) -> None:
     """
@@ -13,10 +14,16 @@ def concatenate_conllu(src_folder: str, pattern: str, outfile: str) -> None:
     src_folder, outfile = validate_path(src_folder, outfile)
     merged_tokens = []
 
-    for f in glob.glob(os.path.join(src_folder, pattern)):
-        with open(f, "r", encoding="utf-8") as data:
-            for tokenlist in parse_incr(data):
-                merged_tokens.append(tokenlist)
+    # Get the list of files to be processed
+    files_to_process = glob.glob(os.path.join(src_folder, pattern))
+
+    # Initialize the progress bar
+    with tqdm(total=len(files_to_process), desc="Merging files") as pbar:
+        for f in files_to_process:
+            with open(f, "r", encoding="utf-8") as data:
+                for tokenlist in parse_incr(data):
+                    merged_tokens.append(tokenlist)
+            pbar.update(1)  # Update the progress bar
 
     with open(outfile, "w", encoding="utf-8") as out:
         out.writelines([sentence.serialize() + "\n" for sentence in merged_tokens])
