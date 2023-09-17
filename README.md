@@ -49,7 +49,7 @@ python main.py -l "./data" -p "*.conllu" --outfile "./merged.conllu"
 ### Options:
 
 - `--source, -s`: Source folder containing CoNLL-U files (local usage).
--`--github_url, -g`: GitHub URL for remote files (GitHub usage).
+- `--github_url, -g`: GitHub URL for remote files (GitHub usage).
 - `--pattern, -p`: File pattern to match (default is *.conllu).
 - `--outfile, -o`: Output file name (default is ./merged.conllu).
 
