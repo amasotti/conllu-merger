@@ -1,5 +1,5 @@
 import argparse
-from merger import concatenate_conllu, download_from_github
+from merger import concatenate_conllu, download_from_github, rm_tmp_files
 
 
 def main():
@@ -15,7 +15,11 @@ def main():
         parser.error("Either --source or --github_url must be provided.")
 
     if args.github_url:
-        download_from_github(args.github_url, args.outfile)
+        tmp_dir = download_from_github(args.github_url)
+        concatenate_conllu(tmp_dir, args.pattern, args.outfile)
+
+        rm_tmp_files(tmp_dir)
+
     else:
         concatenate_conllu(args.source, args.pattern, args.outfile)
 

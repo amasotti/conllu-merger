@@ -1,17 +1,25 @@
 import os
+import random
+import string
+
 import requests
 from urllib.parse import unquote
 from typing import Optional
 
 GITHUB_API_BASE_URL = "https://api.github.com/repos"
+
+
 def make_github_api_url(github_url: str) -> Optional[str]:
     """Create GitHub API URL from a given GitHub repository URL.
 
     Parameters:
-        github_url (str): The GitHub URL to the folder.
+        github_url (str): The GitHub URL to the folder. Example: https://github.com/OliverHellwig/sanskrit/tree/master/dcs/data/conllu/files/Jaimin%C4%AByabr%C4%81hma%E1%B9%87a
+
+
 
     Returns:
-        str: The corresponding GitHub API URL, or None if the URL is invalid.
+        str: The corresponding GitHub API URL, or None if the URL is invalid. Example: https://api.github.com/repos/OliverHellwig/sanskrit/contents/dcs/data/conllu/files/Jaiminīyabrāhmaṇa
+
     """
     try:
         # Decode URL-encoded characters
@@ -23,7 +31,7 @@ def make_github_api_url(github_url: str) -> Optional[str]:
         # Extract repo owner, repo name, and branch/subfolder
         repo_owner = path_parts[0]
         repo_name = path_parts[1]
-        branch_or_folder = "/".join(path_parts[3:])
+        branch_or_folder = "/".join(path_parts[4:])
 
         # Create the GitHub API URL
         api_url = f"{GITHUB_API_BASE_URL}/{repo_owner}/{repo_name}/contents/{branch_or_folder}"
@@ -66,13 +74,19 @@ def download_file(file_url: str, dest_path: str) -> None:
         print(f"Failed to download {dest_path}. Status code: {response.status_code}")
 
 
-def download_from_github(github_url: str, dest_folder: str) -> None:
+def get_random_tmp_dir_name():
+    return "".join(random.choice(string.ascii_letters) for i in range(10))
+
+
+def download_from_github(github_url: str) -> str:
     """Download all files from a GitHub folder to a local directory.
 
     Parameters:
         github_url (str): The GitHub URL to the folder.
-        dest_folder (str): The local folder to save the files.
+    Return
+        str: The path to the local directory containing the downloaded files.
     """
+    tmp_dir = get_random_tmp_dir_name()
     api_url = make_github_api_url(github_url)
     if api_url is None:
         print("Invalid GitHub URL.")
@@ -82,11 +96,20 @@ def download_from_github(github_url: str, dest_folder: str) -> None:
     if directory_content is None:
         return
 
-    if not os.path.exists(dest_folder):
-        os.makedirs(dest_folder)
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
 
     for item in directory_content:
         if item['type'] == 'file':
             file_url = item['download_url']
-            file_name = os.path.join(dest_folder, item['name'])
+            file_name = os.path.join(tmp_dir, item['name'])
             download_file(file_url, file_name)
+
+    return tmp_dir
+
+
+def rm_tmp_files(tmp_dir: str) -> None:
+    # Remove temporary files
+    for file_path in tmp_dir:
+        os.remove(file_path)
+    os.rmdir(tmp_dir)
