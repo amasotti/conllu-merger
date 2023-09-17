@@ -57,3 +57,20 @@ python main.py -l "./data" -p "*.conllu" --outfile "./merged.conllu"
 ## License
 
 This project is licensed under the terms of the MIT license. See [LICENSE.md](LICENSE.md) for more details.
+
+## Further reading
+
+- [CoNLL-U Format](https://universaldependencies.org/format.html)
+- [CoNLL-U Grew Docs](https://grew.fr/doc/conllu/)
+- [CoNLL-U Editor](https://github.com/Orange-OpenSource/conllueditor)
+
+
+### Interesting ConLL-U utilities
+
+- [Common Lisp Library for CoNLL-U](https://github.com/LR-POR/cl-conllu)
+- [Connlu Parser (Rust)](https://github.com/danieldk/conllu)
+- [Conllu-Viewer](https://github.com/rug-compling/conllu-viewer)
+  - [Demo Version](https://urd2.let.rug.nl/~kleiweg/conllu/)
+- [Go-conllu](https://github.com/nuvi/go-conllu) - A parser for the CoNLL-U format written in Go
+- [Conllu Utils](https://github.com/danieldk/conllu-utils) - Utilities for working with CoNLL-U files written in Rust
+- [OpenNLP Extensions](https://github.com/rhdunn/opennlp-extensions) - Extensions for working with OpenNLP written in Kotlin
